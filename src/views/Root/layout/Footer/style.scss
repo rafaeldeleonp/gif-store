@@ -1,0 +1,47 @@
+.app-footer {
+  width: 100%;
+  height: 65px;
+  background-color: #ffffff !important;
+  box-shadow: 0 -1px 5px 0 rgba(206,206,206,.75);
+
+  .footer-container {
+    height: 100%;
+    padding: 0 50px;
+
+    .footer-grid {
+      height: 100%;
+
+      .footer-logo {
+        width: 200px;
+        height: 30px;
+      }      
+
+      .copyright {
+        text-align: center;
+        color: #424242;
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: 600px) {     
+  .app-footer {  
+    .footer-container {
+      height: 100%;
+      padding: 0 25px;
+  
+      .footer-grid {
+        height: 100%;
+  
+        .footer-logo {
+          width: 100px;
+          height: 15px;
+        }      
+  
+        .copyright {
+          font-size: 10px;
+        }
+      }
+    }
+  }
+}
