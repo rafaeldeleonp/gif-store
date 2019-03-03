@@ -11,9 +11,6 @@ function CircularLoader({loading}) {
   return (
     <Fade
       in={loading}
-      style={{
-        transitionDelay: loading ? '800ms' : '0ms',
-      }}
     >
       <CircularProgress
         className="circular-loader"

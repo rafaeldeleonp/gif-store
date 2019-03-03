@@ -1,0 +1,19 @@
+.home {
+  padding: 0 24px 0 40px;
+
+  .search-container {
+    padding-top: 40px;
+    padding-bottom: 40px;
+
+    .search-results {
+      color: #777;
+    }
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .home {
+    padding: 0 20px;
+  }
+}
+
