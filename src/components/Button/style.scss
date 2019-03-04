@@ -1,0 +1,27 @@
+.btn {
+  &.btn-primary {
+    background-color: #1976D2;
+
+    &:disabled {
+      color: rgba(0, 0, 0, 0.26);
+      box-shadow: none;
+      background-color: rgba(0, 0, 0, 0.12);
+    }
+  }
+
+  &.btn-link {
+    background-color: transparent;
+    color: #2699FB;
+    box-shadow: none;
+    text-transform: lowercase;
+    font-weight: 400;
+
+    span {
+      display: block;
+      
+      &::first-letter {
+        text-transform: uppercase;
+      }
+    }
+  }
+}

@@ -1,6 +1,7 @@
 import './style.scss';
 import React, {memo, useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
+import SVG from 'react-inlinesvg';
 import distanceInWordsToNow from 'date-fns/distance_in_words_to_now';
 import withWidth from '@material-ui/core/withWidth';
 import Grid from '@material-ui/core/Grid';
@@ -9,6 +10,11 @@ import CircularProgress from '../../components/CircularProgress';
 import Thumbnail from '../../components/Thumbnail';
 import SearchInput from '../../components/SearchInput';
 import InfiniteList from '../../components/InfiniteList';
+import Modal from '../../components/Modal';
+import Button from '../../components/Button';
+import LeftArrow from '../../resources/svg/left-arrow.svg';
+import Play from '../../resources/svg/play.svg';
+import RightArrow from '../../resources/svg/right-arrow.svg';
 import {isMobileSize, numberWithCommas, formatSearch} from '../../utils';
 
 const LIMIT = 50;
@@ -28,6 +34,7 @@ const INITIAL_STATE = {
 function Home(props) {
   const [gifs, setGifs] = useState(INITIAL_STATE);
   const [search, setSearch] = useState("");
+  const [open, setOpen] = useState(false);
   const total = gifs.pagination.total_count;
 
   useEffect(() => {
@@ -63,6 +70,14 @@ function Home(props) {
     setSearch(value);
   }
 
+  const handleClick = (e) => {
+    setOpen(true);
+  }
+
+  const handleClose = (e) => {
+    setOpen(false);
+  }
+
   const getCorrectImageSize = (images) => {
     const {width} = props;
     const isMobileWidth = isMobileSize(width);
@@ -94,19 +109,18 @@ function Home(props) {
       const url = getCorrectImageSize(gif.images);
 
       return (
-        <div key={key} style={style}>
-          <Thumbnail
-            key={gif.id}
-            title={gif.title}
-            username={username}
-            date={distanceInWordsToNow(date, {addSuffix: false})}
-            url={url}
-          />
-        </div>
+        <Thumbnail
+          style={style}
+          key={gif.id}
+          title={gif.title}
+          username={username}
+          date={distanceInWordsToNow(date, {addSuffix: false})}
+          url={url}
+          onClick={handleClick}
+        />
       )
     }
   }
-
 
   return (
     <div className="home">
@@ -122,30 +136,34 @@ function Home(props) {
           </Typography>
         }
       </Grid>
-      {/* <Grid container wrap="wrap">
-        {gifs.data.map((gif) => {
-          const username = gif.user ? gif.user.display_name : '';
-          const date = gif.trending_datetime ? gif.trending_datetime : '';
-          const url = getCorrectImageSize(gif.images);
-
-          return (
-            <Thumbnail
-              key={gif.id}
-              title={gif.title}
-              username={username}
-              date={distanceInWordsToNow(date, {addSuffix: false})}
-              url={url}
-            />
-          )
-        })}
-      </Grid> */}
       <InfiniteList
+        data={gifs.data}
         rowHeight={406}
         rowCount={gifs.pagination.total_count}
         rowRenderer={rowRenderer}
         isRowLoaded={isRowLoaded}
         loadMoreRows={loadMoreRows}
       />
+      <Modal
+        show={open}
+        title={"Modal"}
+        footer={
+          <div>
+            <Button>
+              <SVG src={LeftArrow} />
+            </Button>
+            <Button>
+              <SVG src={Play} />
+            </Button>
+            <Button>
+              <SVG src={RightArrow} />
+            </Button>
+          </div>
+        }
+        onClose={handleClose}
+      >
+        {gifs.data.length > 0 && <img src={gifs.data[0].images.original.url} width="100%" height={!isMobileSize() ? '252px' : '368px'}/>}
+      </Modal>
     </div >
   )
 }

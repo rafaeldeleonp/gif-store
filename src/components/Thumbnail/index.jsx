@@ -7,7 +7,7 @@ import Typography from '@material-ui/core/Typography';
 
 function Thumbnail(props) {
   return (
-    <Grid className="thumbnail" item xs={12} md={6} lg={4}>
+    <Grid className="thumbnail" item xs={12} md={6} lg={4} style={props.style} onClick={props.onClick}>
       <Card className="thumbnail-card">
         <img className="thumbnail-img" src={props.url} alt="GIF" />
         <Grid className="thumbnail-info" container direction="row">
@@ -33,6 +33,7 @@ function Thumbnail(props) {
 }
 
 Thumbnail.propTypes = {
+  style: PropTypes.object.isRequired,
   title: PropTypes.string,
   username: PropTypes.string,
   date: PropTypes.string,
