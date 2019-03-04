@@ -40,7 +40,8 @@ function LighBox(props) {
   useEffect(() => {
     if (isPlaying) {
       const timeout = setTimeout(() => {
-        setCurrentIndex(currentIndex + 1);
+        setImageLoaded(false);
+        setCurrentIndex((currentIndex + 1) % props.slides.length);
       }, DURATION);
 
       return () => clearTimeout(timeout);
@@ -74,7 +75,7 @@ function LighBox(props) {
   }
 
   const handlePreviousSlide = () => {
-    setCurrentIndex(currentIndex - 1);
+    setCurrentIndex((currentIndex - 1) % props.slides.length);
     setImageLoaded(false);
   }
 
@@ -87,7 +88,7 @@ function LighBox(props) {
   }
 
   const handleNextSlide = () => {
-    setCurrentIndex(currentIndex + 1);
+    setCurrentIndex((currentIndex + 1) % props.slides.length);
     setImageLoaded(false);
   }
 
