@@ -6,19 +6,24 @@ import classnames from 'classnames';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import Button from '../Button';
+import LinearProgress from '../LinearProgress';
 import CloseSVG from '../../resources/svg/close.svg';
 import LeftArrowSVG from '../../resources/svg/left-arrow.svg';
 import PlaySVG from '../../resources/svg/play.svg';
+import PauseSVG from '../../resources/svg/pause.svg';
 import RightArrowSVG from '../../resources/svg/right-arrow.svg';
 
 const ESCAPE = 'Escape';
+const DURATION = '3000';
 
 function LighBox(props) {
   const [currentIndex, setCurrentIndex] = useState(props.index);
   const [isHover, setImageHover] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [loaded, setImageLoaded] = useState(false);
   const currentSlide = props.slides.length > 0 ? props.slides[currentIndex] : undefined;
   const isLeftArrowDisabled = currentIndex === 0;
-  const showRightArrow = currentIndex === props.slides.length - 1;
+  const isRightArrowDisabled = currentIndex === props.slides.length - 1;
   const cls = classnames('lightbox-dialog', {
     'back-drop': props.show,
     'is-hovering': isHover,
@@ -31,6 +36,16 @@ function LighBox(props) {
   useEffect(() => {
     setCurrentIndex(props.index);
   }, [props.index]);
+
+  useEffect(() => {
+    if (isPlaying) {
+      const timeout = setTimeout(() => {
+        setCurrentIndex(currentIndex + 1);
+      }, DURATION);
+
+      return () => clearTimeout(timeout);
+    }
+  }, [currentIndex, isPlaying])
 
   const removeListener = () => {
     window.removeEventListener('keyup', handleKeyUp);
@@ -46,6 +61,10 @@ function LighBox(props) {
     }
   }
 
+  const handleImageLoad = () => {
+    setImageLoaded(true);
+  }
+
   const handleMouseEnter = () => {
     setImageHover(true);
   }
@@ -54,15 +73,23 @@ function LighBox(props) {
     setImageHover(false);
   }
 
-  const handleBack = () => {
+  const handlePreviousSlide = () => {
     setCurrentIndex(currentIndex - 1);
+    setImageLoaded(false);
   }
 
-  const handleForward = () => {
+  const handlePause = () => {
+    setIsPlaying(false);
+  }
+
+  const handlePlay = () => {
+    setIsPlaying(true);
+  }
+
+  const handleNextSlide = () => {
     setCurrentIndex(currentIndex + 1);
+    setImageLoaded(false);
   }
-
-  console.log("INDEX", currentIndex);
 
   return (
     <Grid
@@ -77,6 +104,7 @@ function LighBox(props) {
         <Button className="close-btn" onClick={props.onClose}>
           <SVG src={CloseSVG} />
         </Button>
+        <LinearProgress loading={!loaded} />
         {currentSlide &&
           <Grid container>
             {currentSlide.displayName &&
@@ -90,6 +118,7 @@ function LighBox(props) {
               className="lightbox-img"
               src={currentSlide.url}
               alt="Lightbox img"
+              onLoad={handleImageLoad}
               onMouseEnter={handleMouseEnter}
               onMouseLeave={handleMouseLeave}
             />
@@ -105,17 +134,29 @@ function LighBox(props) {
               <Button
                 className="btn-action"
                 disabled={isLeftArrowDisabled}
-                onClick={handleBack}
+                onClick={handlePreviousSlide}
               >
                 <SVG src={LeftArrowSVG} />
               </Button>
-              <Button className="btn-action">
-                <SVG src={PlaySVG} />
-              </Button>
+              {isPlaying ? (
+                <Button
+                  className="btn-action"
+                  onClick={handlePause}
+                >
+                  <SVG src={PauseSVG} />
+                </Button>
+              ) : (
+                  <Button
+                    className="btn-action"
+                    onClick={handlePlay}
+                  >
+                    <SVG src={PlaySVG} />
+                  </Button>
+                )}
               <Button
                 className="btn-action"
-                disabled={showRightArrow}
-                onClick={handleForward}
+                disabled={isRightArrowDisabled}
+                onClick={handleNextSlide}
               >
                 <SVG src={RightArrowSVG} />
               </Button>

@@ -1,0 +1,10 @@
+.linear-loader {
+  height: 16px;
+  position: absolute;
+  width: calc(100% - 16px);
+  background-color: rgba(204,204,204, 0.2);
+
+  div {
+    background-color: rgba(0, 0, 0, 0.8);
+  }
+}

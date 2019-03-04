@@ -1,10 +1,10 @@
 import './style.scss';
 import React, {memo} from 'react';
 import PropTypes from 'prop-types';
-import CircularProgress from '@material-ui/core/CircularProgress';
+import LinearProgress from '@material-ui/core/LinearProgress';
 import Fade from '@material-ui/core/Fade';
 
-function CircularLoader({loading}) {
+function LinearLoader({loading}) {
   if (!loading) {
     return null;
   }
@@ -13,19 +13,19 @@ function CircularLoader({loading}) {
     <Fade
       in={loading}
     >
-      <CircularProgress
-        className="circular-loader"
+      <LinearProgress
+        className="linear-loader"
       />
     </Fade>
   );
 }
 
-CircularLoader.propTypes = {
+LinearLoader.propTypes = {
   loading: PropTypes.bool,
 }
 
-CircularLoader.defaultProps = {
+LinearLoader.defaultProps = {
   loading: false,
 }
 
-export default memo(CircularLoader);
+export default memo(LinearLoader);

@@ -57,14 +57,15 @@
     .lightbox-display-name-container {
       height: 20px;
       position: absolute;
-      top: 8px;
+      bottom: 16px;
+      left: 8px;
 
       .lightbox-display-name {
-        background-color: rgba(0,0,0, 0.3);
+        background: rgba(0,0,0, 0.8);
         font-weight: 500;
         color: white;
         padding: 4px 8px;
-        border-bottom-right-radius: 52%;
+        border-top-right-radius: 8px;
 
         &::first-letter {
           text-transform: uppercase;

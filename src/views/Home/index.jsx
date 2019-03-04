@@ -1,7 +1,6 @@
 import './style.scss';
 import React, {memo, useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
-import SVG from 'react-inlinesvg';
 import distanceInWordsToNow from 'date-fns/distance_in_words_to_now';
 import withWidth from '@material-ui/core/withWidth';
 import Grid from '@material-ui/core/Grid';
@@ -11,10 +10,6 @@ import Thumbnail from '../../components/Thumbnail';
 import SearchInput from '../../components/SearchInput';
 import InfiniteList from '../../components/InfiniteList';
 import LightBox from '../../components/LightBox';
-import Button from '../../components/Button';
-import LeftArrow from '../../resources/svg/left-arrow.svg';
-import Play from '../../resources/svg/play.svg';
-import RightArrow from '../../resources/svg/right-arrow.svg';
 import {isMobileSize, numberWithCommas, formatSearch} from '../../utils';
 
 const LIMIT = 10;
