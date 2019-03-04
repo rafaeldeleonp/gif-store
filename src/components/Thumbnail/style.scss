@@ -3,6 +3,10 @@
   margin-bottom: 28px;
   padding-right: 16px;
 
+  &:hover {
+    cursor: pointer;
+  }
+
   .thumbnail-card {
     min-height: 406px;
     max-height: 406px;
