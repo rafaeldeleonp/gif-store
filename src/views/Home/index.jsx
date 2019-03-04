@@ -135,7 +135,7 @@ function Home(props) {
   return (
     <div className="home">
       <CircularProgress loading={gifs.isFetching} />
-      <Grid className="search-container" container direction="column">
+      <Grid className="search-container" container direction="column" alignItems="center" justify="center">
         <SearchInput
           value={search}
           onChange={handleChange}
