@@ -12,10 +12,13 @@ class InfiniteList extends React.Component {
             isRowLoaded={this.props.isRowLoaded}
             loadMoreRows={this.props.loadMoreRows}
             rowCount={this.props.rowCount}
+            minimumBatchSize={this.props.minimumBatchSize}
           >
             {({onRowsRendered, registerChild}) => (
               <AutoSizer disableHeight>
                 {({width}) => {
+
+                  console.log("SCROLL TOP", scrollTop);
                   return <List
                     className="infinite-list"
                     autoHeight
@@ -28,7 +31,7 @@ class InfiniteList extends React.Component {
                     onScroll={onChildScroll}
                     scrollTop={scrollTop}
                     rowRenderer={this.props.rowRenderer}
-                    onRowsRenderd={onRowsRendered}
+                    onRowsRendered={onRowsRendered}
                   />;
                 }}
               </AutoSizer>
@@ -44,6 +47,7 @@ InfiniteList.propTypes = {
   data: PropTypes.arrayOf(PropTypes.object).isRequired,
   rowHeight: PropTypes.number.isRequired,
   rowCount: PropTypes.number.isRequired,
+  minimumBatchSize: PropTypes.number.isRequired,
   rowRenderer: PropTypes.func.isRequired,
   loadMoreRows: PropTypes.func.isRequired,
 }

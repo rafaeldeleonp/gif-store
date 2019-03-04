@@ -12,7 +12,7 @@ import InfiniteList from '../../components/InfiniteList';
 import LightBox from '../../components/LightBox';
 import {isMobileSize, numberWithCommas, formatSearch} from '../../utils';
 
-const LIMIT = 10;
+const LIMIT = 50;
 const URL = process.env.REACT_APP_API_URL;
 const API_KEY = process.env.REACT_APP_API_KEY;
 const INITIAL_STATE = {
@@ -23,6 +23,7 @@ const INITIAL_STATE = {
     offset: 0,
     total_count: 0,
   },
+  skip: 0,
   isFetching: false,
 }
 
@@ -34,16 +35,16 @@ function Home(props) {
   const total = gifs.pagination.total_count;
 
   useEffect(() => {
-    fetchData();
-  }, [search]);
-
-  const fetchData = () => {
     setGifs({
       ...INITIAL_STATE,
       isFetching: true,
-    })
+    });
 
-    fetch(`${URL}/search?q=${formatSearch(search)}&api_key=${API_KEY}&limit=${LIMIT}`).then((response) => {
+    fetchData();
+  }, [search]);
+
+  const fetchData = (limit = LIMIT, offset = 0) => {
+    fetch(`${URL}/search?q=${formatSearch(search)}&api_key=${API_KEY}&limit=${limit}&offset=${offset}`).then((response) => {
       if (response.status !== 200) {
         console.log('Error fething gifs. Status Code: ' + response.status);
         return;
@@ -52,11 +53,13 @@ function Home(props) {
       response.json().then(function (data) {
         setGifs({
           ...data,
+          data: gifs.data.concat(data.data),
+          skip: offset,
           isFetching: false,
         });
       });
     }).catch((err) => {
-      setGifs(INITIAL_STATE);
+      setGifs({...gifs});
       console.log('Fetch Error', err);
     });
   }
@@ -96,18 +99,14 @@ function Home(props) {
   }
 
   const loadMoreRows = ({startIndex, stopIndex}) => {
-    debugger;
-    setGifs({
-      ...INITIAL_STATE,
-      isFetching: true,
-    })
+    const limit = stopIndex - startIndex;
+    const offset = gifs.skip + gifs.pagination.count;
 
-    return fetchData();
+    return fetchData(limit, offset);
   }
 
   const isRowLoaded = ({index}) => {
-    debugger;
-    return index;
+    return !!gifs.data[index];
   }
 
   const rowRenderer = ({key, index, style}) => {
@@ -121,7 +120,7 @@ function Home(props) {
       return (
         <Thumbnail
           style={style}
-          key={gif.id}
+          key={key}
           title={gif.title}
           username={username}
           date={distanceInWordsToNow(date, {addSuffix: false})}
@@ -131,6 +130,8 @@ function Home(props) {
       )
     }
   }
+
+  console.log("DATA", gifs.data);
 
   return (
     <div className="home">
@@ -150,6 +151,7 @@ function Home(props) {
         data={gifs.data}
         rowHeight={406}
         rowCount={gifs.pagination.total_count}
+        minimumBatchSize={LIMIT}
         rowRenderer={rowRenderer}
         isRowLoaded={isRowLoaded}
         loadMoreRows={loadMoreRows}
