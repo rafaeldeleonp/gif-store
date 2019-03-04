@@ -24,7 +24,7 @@ function OwnButton(props) {
 
   return (
     <Button
-      className={classnames('btn', `btn-${cls}`, props.className)}
+      className={classnames('btn', `btn-${cls}`, props.className, {'is-disabled': props.disabled})}
       type={props.type}
       color={props.color}
       variant={props.variant}

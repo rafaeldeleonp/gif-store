@@ -10,14 +10,14 @@ import CircularProgress from '../../components/CircularProgress';
 import Thumbnail from '../../components/Thumbnail';
 import SearchInput from '../../components/SearchInput';
 import InfiniteList from '../../components/InfiniteList';
-import Modal from '../../components/Modal';
+import LightBox from '../../components/LightBox';
 import Button from '../../components/Button';
 import LeftArrow from '../../resources/svg/left-arrow.svg';
 import Play from '../../resources/svg/play.svg';
 import RightArrow from '../../resources/svg/right-arrow.svg';
 import {isMobileSize, numberWithCommas, formatSearch} from '../../utils';
 
-const LIMIT = 50;
+const LIMIT = 10;
 const URL = process.env.REACT_APP_API_URL;
 const API_KEY = process.env.REACT_APP_API_KEY;
 const INITIAL_STATE = {
@@ -35,6 +35,7 @@ function Home(props) {
   const [gifs, setGifs] = useState(INITIAL_STATE);
   const [search, setSearch] = useState("");
   const [open, setOpen] = useState(false);
+  const [itemIndex, setItemIndex] = useState(0);
   const total = gifs.pagination.total_count;
 
   useEffect(() => {
@@ -70,7 +71,8 @@ function Home(props) {
     setSearch(value);
   }
 
-  const handleClick = (e) => {
+  const handleClick = (index) => {
+    setItemIndex(index);
     setOpen(true);
   }
 
@@ -78,10 +80,23 @@ function Home(props) {
     setOpen(false);
   }
 
-  const getCorrectImageSize = (images) => {
+  const getDisplayName = (gif) => {
+    return gif.user ? gif.user.display_name : '';
+  }
+
+  const getCorrectImageSize = (images, animated = false) => {
     const {width} = props;
     const isMobileWidth = isMobileSize(width);
-    const url = isMobileWidth ? images.fixed_height_still.url : images.original_still.url;
+    let url = "";
+
+    if (isMobileWidth) {
+      if (animated) url = images.fixed_height.url;
+      else url = images.fixed_height_still.url;
+    } else if (!isMobileWidth) {
+      if (animated) url = images.original.url;
+      else url = images.original_still.url;
+    }
+
     return url;
   }
 
@@ -104,7 +119,7 @@ function Home(props) {
     if (gifs.data.length > 0 && gifs.data[index]) {
       const gif = gifs.data[index];
 
-      const username = gif.user ? gif.user.display_name : '';
+      const username = getDisplayName(gif);
       const date = gif.trending_datetime ? gif.trending_datetime : '';
       const url = getCorrectImageSize(gif.images);
 
@@ -116,7 +131,7 @@ function Home(props) {
           username={username}
           date={distanceInWordsToNow(date, {addSuffix: false})}
           url={url}
-          onClick={handleClick}
+          onClick={() => handleClick(index)}
         />
       )
     }
@@ -144,26 +159,21 @@ function Home(props) {
         isRowLoaded={isRowLoaded}
         loadMoreRows={loadMoreRows}
       />
-      <Modal
+      <LightBox
         show={open}
-        title={"Modal"}
-        footer={
-          <div>
-            <Button>
-              <SVG src={LeftArrow} />
-            </Button>
-            <Button>
-              <SVG src={Play} />
-            </Button>
-            <Button>
-              <SVG src={RightArrow} />
-            </Button>
-          </div>
+        index={itemIndex}
+        slides={
+          gifs.data.map((gif) => {
+            return {
+              title: gif.title,
+              url: getCorrectImageSize(gif.images, true),
+              displayName: getDisplayName(gif),
+            }
+          })
         }
         onClose={handleClose}
       >
-        {gifs.data.length > 0 && <img src={gifs.data[0].images.original.url} width="100%" height={!isMobileSize() ? '252px' : '368px'}/>}
-      </Modal>
+      </LightBox>
     </div >
   )
 }
