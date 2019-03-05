@@ -7,7 +7,7 @@ import Typography from '@material-ui/core/Typography';
 
 function Thumbnail(props) {
   return (
-    <Grid className="thumbnail" item xs={12} onClick={props.onClick}>
+    <Grid className="thumbnail" item xs={12} style={props.style} onClick={props.onClick}>
       <Paper className="thumbnail-paper" elevation={4}>
         <img className="thumbnail-img" src={props.url} alt="GIF" />
         <Grid className="thumbnail-info" container direction="row">

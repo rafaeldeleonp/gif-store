@@ -1,12 +1,11 @@
-const LARGE_SCREENS = 'lg';
-const EXTRA_LARGE_SCREENS = 'xl';
+const EXTRA_SMALL = 'xs';
 
 export function firstLetterCapitalized(text = "") {
   return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
 }
 
 export function isMobileSize(width) {
-  return width !== LARGE_SCREENS && width !== EXTRA_LARGE_SCREENS;
+  return width === EXTRA_SMALL;
 }
 
 export function numberWithCommas(number) {

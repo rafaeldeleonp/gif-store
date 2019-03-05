@@ -25,6 +25,7 @@ const INITIAL_STATE = {
   },
   skip: 0,
   isFetching: false,
+  blockLoadMore: false,
 }
 
 function Home(props) {
@@ -44,24 +45,30 @@ function Home(props) {
   }, [search]);
 
   const fetchData = (offset = 0, limit = LIMIT) => {
-    fetch(`${URL}/search?q=${formatSearch(search)}&api_key=${API_KEY}&limit=${limit}&offset=${offset}`).then((response) => {
-      if (response.status !== 200) {
-        console.log('Error fething gifs. Status Code: ' + response.status);
-        return;
-      }
+    if (!gifs.blockLoadMore) {
+      fetch(`${URL}/search?q=${formatSearch(search)}&api_key=${API_KEY}&limit=${limit}&offset=${offset}`).then((response) => {
+        if (response.status !== 200) {
+          console.log('Error fething gifs. Status Code: ' + response.status);
+          return;
+        }
 
-      response.json().then(function (data) {
-        setGifs({
-          ...data,
-          data: gifs.data.concat(data.data),
-          skip: offset,
-          isFetching: false,
+        if (response.status === 429) {
+          setGifs({...gifs, blockLoadMore: true});
+        }
+
+        response.json().then(function (data) {
+          setGifs({
+            ...data,
+            data: gifs.data.concat(data.data),
+            skip: offset,
+            isFetching: false,
+          });
         });
+      }).catch((err) => {
+        setGifs({...gifs});
+        console.log('Fetch Error', err);
       });
-    }).catch((err) => {
-      setGifs({...gifs});
-      console.log('Fetch Error', err);
-    });
+    }
   }
 
   const handleChange = (e) => {
@@ -145,18 +152,23 @@ function Home(props) {
           </Typography>
         }
       </Grid>
-      <Grid className="thumbnails-list-container" container justify="center" >
+      <Grid className="thumbnails-list-container" container justify="center">
         <Grid className="thumbnails-list-wrapper" item xs={12} sm={10} lg={8}>
           <InfiniteList
-            data={gifs.data}
-            rowHeight={150}
+            rowHeight={112}
             rowCount={total}
             minimumBatchSize={LIMIT}
             rowRenderer={rowRenderer}
             isRowLoaded={isRowLoaded}
             loadMoreRows={loadMoreRows}
+            isMobile={isMobileSize(props.width)}
           />
         </Grid>
+        {gifs.blockLoadMore && <Grid container>
+          <Typography variant="body2">
+            Can't do any more requets.
+          </Typography>
+        </Grid>}
       </Grid>
       <LightBox
         show={open}
