@@ -10,7 +10,7 @@ function Footer() {
       <Paper className="footer-container">
         <Grid className="footer-grid" container={true} direction="row" alignItems="center" justify="center">
           <Typography className="copyright" variant="body1">
-            &copy; 2019 Blue Coding LLC.
+            &copy; 2019 Rafael De Leon.
           </Typography>
         </Grid>
       </Paper>
