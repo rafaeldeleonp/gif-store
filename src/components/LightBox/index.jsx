@@ -58,6 +58,8 @@ function LighBox(props) {
 
       return () => clearTimeout(timeout);
     }
+
+    if ((props.slides.length - state.currentIndex) <= 10) props.fetch(props.offset);    
   }, [state.currentIndex, state.isPlaying])
 
   const removeListener = () => {
@@ -210,7 +212,9 @@ LighBox.propTypes = {
       displayName: PropTypes.string,
     })
   ),
+  offset: PropTypes.number,
   totalCount: PropTypes.number,
+  fetch: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
 }
 

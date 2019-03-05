@@ -43,7 +43,7 @@ function Home(props) {
     fetchData();
   }, [search]);
 
-  const fetchData = (limit = LIMIT, offset = 0) => {
+  const fetchData = (offset = 0, limit = LIMIT) => {
     fetch(`${URL}/search?q=${formatSearch(search)}&api_key=${API_KEY}&limit=${limit}&offset=${offset}`).then((response) => {
       if (response.status !== 200) {
         console.log('Error fething gifs. Status Code: ' + response.status);
@@ -102,7 +102,7 @@ function Home(props) {
     const limit = stopIndex - startIndex;
     const offset = gifs.skip + gifs.pagination.count;
 
-    return fetchData(limit, offset);
+    return fetchData(offset, limit);
   }
 
   const isRowLoaded = ({index}) => {
@@ -170,7 +170,9 @@ function Home(props) {
             }
           })
         }
+        offset={gifs.skip === 0 ? LIMIT : gifs.skip}
         totalCount={total}
+        fetch={fetchData}
         onClose={handleClose}
       >
       </LightBox>
