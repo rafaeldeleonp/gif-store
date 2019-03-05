@@ -131,8 +131,6 @@ function Home(props) {
     }
   }
 
-  console.log("DATA", gifs.data);
-
   return (
     <div className="home">
       <CircularProgress loading={gifs.isFetching} />
@@ -152,7 +150,7 @@ function Home(props) {
           <InfiniteList
             data={gifs.data}
             rowHeight={150}
-            rowCount={gifs.pagination.total_count}
+            rowCount={total}
             minimumBatchSize={LIMIT}
             rowRenderer={rowRenderer}
             isRowLoaded={isRowLoaded}
@@ -172,6 +170,7 @@ function Home(props) {
             }
           })
         }
+        totalCount={total}
         onClose={handleClose}
       >
       </LightBox>

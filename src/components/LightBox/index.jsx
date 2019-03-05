@@ -12,41 +12,53 @@ import LeftArrowSVG from '../../resources/svg/left-arrow.svg';
 import PlaySVG from '../../resources/svg/play.svg';
 import PauseSVG from '../../resources/svg/pause.svg';
 import RightArrowSVG from '../../resources/svg/right-arrow.svg';
+import {numberWithCommas} from '../../utils';
 
 const ESCAPE = 'Escape';
+const SPACE = 'Space';
+const ARROW_LEFT = 'ArrowLeft';
+const ARROW_RIGHT = 'ArrowRight';
 const DURATION = '3000';
 
+const INITIAL_STATE = {
+  currentIndex: 0,
+  isHover: false,
+  isPlaying: false,
+  loaded: false,
+}
+
 function LighBox(props) {
-  const [currentIndex, setCurrentIndex] = useState(props.index);
-  const [isHover, setImageHover] = useState(false);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [loaded, setImageLoaded] = useState(false);
-  const currentSlide = props.slides.length > 0 ? props.slides[currentIndex] : undefined;
-  const isLeftArrowDisabled = currentIndex === 0;
-  const isRightArrowDisabled = currentIndex === props.slides.length - 1;
+  const [state, setLightBoxState] = useState(INITIAL_STATE);
+  const currentSlide = props.slides.length > 0 ? props.slides[state.currentIndex] : undefined;
+  const isLeftArrowDisabled = state.currentIndex === 0;
+  const isRightArrowDisabled = state.currentIndex === props.slides.length - 1;
   const cls = classnames('lightbox-dialog', {
     'back-drop': props.show,
-    'is-hovering': isHover,
+    'is-hovering': state.isHover,
   });
 
   useEffect(() => {
     window.addEventListener('keyup', handleKeyUp);
-  })
+    return () => removeListener();
+  });
 
   useEffect(() => {
-    setCurrentIndex(props.index);
+    setLightBoxState({...state, currentIndex: props.index});
   }, [props.index]);
 
   useEffect(() => {
-    if (isPlaying) {
+    if (state.isPlaying) {
       const timeout = setTimeout(() => {
-        setImageLoaded(false);
-        setCurrentIndex((currentIndex + 1) % props.slides.length);
+        setLightBoxState({
+          ...state,
+          currentIndex: (state.currentIndex + 1) % props.slides.length,
+          loaded: false
+        });
       }, DURATION);
 
       return () => clearTimeout(timeout);
     }
-  }, [currentIndex, isPlaying])
+  }, [state.currentIndex, state.isPlaying])
 
   const removeListener = () => {
     window.removeEventListener('keyup', handleKeyUp);
@@ -54,42 +66,61 @@ function LighBox(props) {
 
   const handleKeyUp = (e) => {
     const {onClose} = props;
+    e.preventDefault();
 
     if (e.code === ESCAPE || e.keyCode === 27) {
-      e.preventDefault();
       onClose();
       removeListener();
+    }
+
+    if (e.code === SPACE || e.keyCode === 32) {
+      if (state.isPlaying) handlePause();
+      else handlePlay();
+    }
+
+    if (e.code === ARROW_LEFT || e.keyCode === 37) {
+      handlePreviousSlide();
+    }
+
+    if (e.code === ARROW_RIGHT || e.keyCode === 39) {
+      handleNextSlide();
     }
   }
 
   const handleImageLoad = () => {
-    setImageLoaded(true);
+    setLightBoxState({...state, loaded: true});
   }
 
   const handleMouseEnter = () => {
-    setImageHover(true);
+    setLightBoxState({...state, isHover: true});
   }
 
   const handleMouseLeave = () => {
-    setImageHover(false);
+    setLightBoxState({...state, isHover: false});
   }
 
   const handlePreviousSlide = () => {
-    setCurrentIndex((currentIndex - 1) % props.slides.length);
-    setImageLoaded(false);
+    setLightBoxState({
+      ...state,
+      currentIndex: (state.currentIndex - 1) % props.slides.length,
+      loaded: false,
+    });
   }
 
   const handlePause = () => {
-    setIsPlaying(false);
+    setLightBoxState({...state, isPlaying: false});
   }
 
   const handlePlay = () => {
-    setIsPlaying(true);
+    setLightBoxState({...state, isPlaying: true});
   }
 
   const handleNextSlide = () => {
-    setCurrentIndex((currentIndex + 1) % props.slides.length);
-    setImageLoaded(false);
+    setLightBoxState({
+      ...state,
+      currentIndex: (state.currentIndex + 1) % props.slides.length,
+      loaded: false,
+    });
   }
 
   return (
@@ -105,7 +136,7 @@ function LighBox(props) {
         <Button className="close-btn" onClick={props.onClose}>
           <SVG src={CloseSVG} />
         </Button>
-        <LinearProgress loading={!loaded} />
+        <LinearProgress loading={!state.loaded} />
         {currentSlide &&
           <Grid container>
             {currentSlide.displayName &&
@@ -128,7 +159,7 @@ function LighBox(props) {
                 {currentSlide.title}
               </Typography>
               <Typography className="lightbox-counter" variant="body2">
-                {`image ${currentIndex + 1} of ${props.slides.length}`}
+                {`image ${state.currentIndex + 1} of ${numberWithCommas(props.totalCount)}`}
               </Typography>
             </Grid>
             <Grid className="lightbox-actions">
@@ -139,7 +170,7 @@ function LighBox(props) {
               >
                 <SVG src={LeftArrowSVG} />
               </Button>
-              {isPlaying ? (
+              {state.isPlaying ? (
                 <Button
                   className="btn-action"
                   onClick={handlePause}
@@ -179,12 +210,14 @@ LighBox.propTypes = {
       displayName: PropTypes.string,
     })
   ),
+  totalCount: PropTypes.number,
   onClose: PropTypes.func.isRequired,
 }
 
 LighBox.defaultProps = {
   show: false,
   index: 0,
+  totalCount: 0,
 }
 
 export default memo(LighBox);
