@@ -9,6 +9,13 @@
       color: #777;
     }
   }
+
+  .thumbnails-list-container {
+    .thumbnails-list-wrapper {
+      margin-left: auto;
+      margin-right: auto;
+    }
+  }
 }
 
 @media only screen and (max-width: 600px) {

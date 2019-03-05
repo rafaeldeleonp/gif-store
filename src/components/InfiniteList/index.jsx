@@ -17,8 +17,6 @@ class InfiniteList extends React.Component {
             {({onRowsRendered, registerChild}) => (
               <AutoSizer disableHeight>
                 {({width}) => {
-
-                  console.log("SCROLL TOP", scrollTop);
                   return <List
                     className="infinite-list"
                     autoHeight

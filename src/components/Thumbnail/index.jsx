@@ -1,33 +1,33 @@
 import './style.scss';
 import React, {memo} from 'react';
 import PropTypes from 'prop-types';
-import Card from '@material-ui/core/Card';
+import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 
 function Thumbnail(props) {
   return (
-    <Grid className="thumbnail" item xs={12} md={6} lg={4} style={props.style} onClick={props.onClick}>
-      <Card className="thumbnail-card">
+    <Grid className="thumbnail" item xs={12} onClick={props.onClick}>
+      <Paper className="thumbnail-paper" elevation={4}>
         <img className="thumbnail-img" src={props.url} alt="GIF" />
         <Grid className="thumbnail-info" container direction="row">
           <Grid item xs={12}>
-            <Typography className="thumbnail-title" variant="h6">
+            <Typography className="thumbnail-title" variant="subtitle2">
               {props.title}
             </Typography>
           </Grid>
           <Grid item xs={12}>
-            <Typography className="thumbnail-username" variant="subtitle1">
+            <Typography className="thumbnail-username" variant="body2">
               {props.username}
             </Typography>
           </Grid>
           <Grid item xs={12}>
-            <Typography className="thumbnail-date" variant="subtitle1">
+            <Typography className="thumbnail-date" variant="caption">
               {props.date}
             </Typography>
           </Grid>
         </Grid>
-      </Card>
+      </Paper>
     </Grid>
   )
 }

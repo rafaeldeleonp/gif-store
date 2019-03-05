@@ -147,15 +147,19 @@ function Home(props) {
           </Typography>
         }
       </Grid>
-      <InfiniteList
-        data={gifs.data}
-        rowHeight={406}
-        rowCount={gifs.pagination.total_count}
-        minimumBatchSize={LIMIT}
-        rowRenderer={rowRenderer}
-        isRowLoaded={isRowLoaded}
-        loadMoreRows={loadMoreRows}
-      />
+      <Grid className="thumbnails-list-container" container justify="center" >
+        <Grid className="thumbnails-list-wrapper" item xs={12} sm={10} lg={8}>
+          <InfiniteList
+            data={gifs.data}
+            rowHeight={150}
+            rowCount={gifs.pagination.total_count}
+            minimumBatchSize={LIMIT}
+            rowRenderer={rowRenderer}
+            isRowLoaded={isRowLoaded}
+            loadMoreRows={loadMoreRows}
+          />
+        </Grid>
+      </Grid>
       <LightBox
         show={open}
         index={itemIndex}

@@ -1,30 +1,33 @@
 .thumbnail {
-  max-height: 406px;
-  margin-bottom: 28px;
-  padding-right: 16px;
+  margin-bottom: 20px;
 
   &:hover {
     cursor: pointer;
   }
 
-  .thumbnail-card {
-    min-height: 406px;
-    max-height: 406px;
+  .thumbnail-paper {
+    display: flex;
+    align-items: center;
+    min-height: 112px;
+    max-height: 112px;
+    padding: 0 8px;
+    border: 1px solid rgba(0, 0, 0, .1);
       
     .thumbnail-img {
-      width: 100%;
-      height: 298px;
+      min-width: 152px;
+      width: 152px;
+      height: 90px;
+      margin-right: 12px;
+      border-radius: 4px;
     }
 
     .thumbnail-info {
-      padding: 0 16px 16px;
+      width: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
 
       .thumbnail-title {
-        width: 100%;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-
         &::first-letter {
           text-transform: uppercase;
         }
@@ -32,40 +35,3 @@
     }
   }
 }
-
-@media only screen and (max-width: 600px) {
-  .thumbnail {
-    padding-right: 0;
-
-    .thumbnail-card {
-      min-height: 252px;
-
-      .thumbnail-img {
-        width: 100%;
-        height: 152px;
-      }
-
-      .thumbnail-info {
-        .thumbnail-title {
-          font-size: 16px;
-          white-space: normal;
-        }
-      }
-    }
-  }
-}
-
-@media (min-width: 600x) and (max-width: 960px) {
-  .thumbnail {
-    padding-right: 0;
-
-    .thumbnail-card {
-      .thumbnail-info {
-        .thumbnail-title {
-          white-space: normal;
-        }
-      }
-    }
-  }
-}
-

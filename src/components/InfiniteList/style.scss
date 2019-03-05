@@ -1,4 +1,5 @@
 .infinite-list {
-  .ReactVirtualized__Grid__innerScrollContainer {
+  &:focus {
+    outline: none;
   }
 }
